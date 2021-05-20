@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Switch,
-  Button,
-  Alert,
   StatusBar,
 } from "react-native";
 
@@ -101,8 +99,8 @@ function HomeScreenOff(state) {
 function HomeScreenOn(state) {
   let switchSystem = (
     <Switch
-      trackColor={{ false: "#767577", true: "aqua" }}
-      thumbColor={"#fff"}
+      trackColor={SwitchStyles.trackColor}
+      thumbColor={SwitchStyles.trackColor}
       onValueChange={state.switchSystem[2]}
       value={true}
     />
@@ -215,5 +213,10 @@ function AntiTheftScreen() {
     </View>
   );
 }
+
+SwitchStyles = {
+  trackColor: { false: "#767577", true: "aqua" },
+  thumbColor: "#fff",
+};
 
 export default HomeScreen;
