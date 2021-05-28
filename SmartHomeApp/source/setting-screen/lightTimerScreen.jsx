@@ -1,50 +1,198 @@
 import React, { useState } from "react";
-import { Text, View, Switch, Button } from "react-native";
-import Data from "../database/data";
+import {
+  View,
+  Button,
+  Platform,
+  TouchableOpacity,
+  Switch,
+  Text,
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import Styles from "./styles";
 
-function LightTimerScreen() {
-  return <React.Fragment></React.Fragment>;
+function HeaderBar() {
+  return (
+    <View style={Styles.headerBarInSettings}>
+      <Text style={Styles.textHeaderBarInSettings}>Light Timer</Text>
+    </View>
+  );
 }
 
-function item(isOn, nameItem) {
-  const [isEnabled, setIsEnabled] = useState(isOn);
+const LightTimerScreen = () => {
+  return (
+    <View style={{ flex: 1 }}>
+      {HeaderBar()}
+      {Item()}
+      {AddTime()}
+    </View>
+  );
+};
+
+const Item = () => {
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatePicker = () => {
+    showMode("date");
+  };
+
+  const dateTimeItem = (time, date) => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignSelf: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Text
+          style={{
+            alignSelf: "flex-start",
+            flex: 0.5,
+            fontWeight: "bold",
+            fontSize: 30,
+            marginLeft: 15,
+          }}
+        >
+          {time}
+        </Text>
+        <Text
+          style={{
+            alignSelf: "flex-start",
+            flex: 0.25,
+            fontWeight: "bold",
+            fontSize: 15,
+            marginLeft: 20,
+          }}
+        >
+          {date}
+        </Text>
+      </View>
+    );
+  };
+  let dateTimePicker = (
+    <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          timeZoneOffsetInMinutes={0}
+          value={date}
+          mode={mode}
+          is24Hour={true}
+          display="default"
+          onChange={onChange}
+        />
+      )}
+    </View>
+  );
+
+  const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
   };
   let sw = (
     <Switch
-      trackColor={{ false: "#767577", true: "aqua" }}
-      thumbColor={"#fff"}
+      trackColor={SwitchStyles.trackColor}
+      thumbColor={SwitchStyles.thumbColor}
       onValueChange={toggleSwitch}
       value={isEnabled}
     />
   );
-
   return (
     <View
       style={{
-        backgroundColor: "#fff",
-        flex: 0.1,
-        flexDirection: "row-reverse",
-        borderBottomColor: "gray",
-        borderWidth: 1,
-        margin: 10,
+        flex: 2,
       }}
     >
-      {sw}
-      <Text
+      <TouchableOpacity
         style={{
-          textAlign: "left",
-          alignSelf: "center",
-          flex: 0.95,
-          fontWeight: "bold",
-          fontSize: 15,
+          backgroundColor: "#fff",
+          flex: 0.25,
+          flexDirection: "row-reverse",
+          borderLeftColor: "#fff",
+          borderRightColor: "#fff",
+          borderTopColor: "#fff",
+          borderBottomColor: "gray",
+          borderWidth: 3,
+          margin: 10,
         }}
+        onPress={showDatePicker}
       >
-        {nameItem}
-      </Text>
+        {sw}
+        {dateTimeItem("5:30", "Today")}
+        <View style={{ flex: 0.25, justifyContent: "center" }}>
+          <Text style={{ fontSize: 50, marginBottom: 20 }}>-</Text>
+        </View>
+        {dateTimeItem("11:30", "Today")}
+      </TouchableOpacity>
+      {dateTimePicker}
     </View>
   );
-}
+};
 
+const AddTime = () => {
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
+
+  return (
+    <View style={{ flex: 1, flexDirection: "column-reverse", flexShrink: 1 }}>
+      <View
+        style={{
+          flex: 0.5,
+          justifyContent: "center",
+        }}
+      >
+        <Button onPress={showTimepicker} title="ADD" />
+      </View>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          timeZoneOffsetInMinutes={0}
+          value={date}
+          mode={mode}
+          is24Hour={true}
+          display="default"
+          onChange={onChange}
+        />
+      )}
+    </View>
+  );
+};
+
+SwitchStyles = {
+  trackColor: { false: "#767577", true: "aqua" },
+  thumbColor: "#fff",
+};
 export default LightTimerScreen;
