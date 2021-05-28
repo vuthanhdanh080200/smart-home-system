@@ -1,45 +1,16 @@
 import React from "react";
-import { Text, View, Image, StatusBar, TouchableOpacity } from "react-native";
+import { Text, View, Image, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StatusBar } from 'expo-status-bar';
 import Images from "../config/images";
 import Styles from "../config/styles";
 
 import HomeScreen from "../home-screen/homeScreen";
 import SettingsScreen from "../setting-screen/settingsSreen";
+import NotificationStackScreen from "../notification-screen/notificationScreen";
+import ReportStackScreen from "../report-screen/reportScreen";
 
 const Tab = createBottomTabNavigator();
-
-function ReportScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Report!</Text>
-    </View>
-  );
-}
-
-// function HomeScreen() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Text>Home!</Text>
-//     </View>
-//   );
-// }
-
-// function SettingsScreen() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Text>Settings!</Text>
-//     </View>
-//   );
-// }
-
-function NotificationScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Report!</Text>
-    </View>
-  );
-}
 
 function SystemScreen() {
   return (
@@ -111,11 +82,12 @@ function MyTabBar({ state, navigation }) {
 const NavBar = () => {
   return (
     <React.Fragment>
+      <StatusBar />
       <Tab.Navigator screenOptions={screenOptions} initialRouteName="Settings">
-        <Tab.Screen tabBar name="Report" component={ReportScreen} />
+        <Tab.Screen tabBar name="Report" component={ReportStackScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Notification" component={NotificationScreen} />
+        <Tab.Screen name="Notification" component={NotificationStackScreen} />
         <Tab.Screen name="System" component={SystemScreen} />
       </Tab.Navigator>
       <Image source={Images.logo} style={Styles.logo} />
