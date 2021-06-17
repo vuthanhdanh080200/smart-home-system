@@ -7,6 +7,7 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^4.12.2",
     "@react-native-community/datetimepicker": "^3.5.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/app": "^12.0.0",
@@ -16,10 +17,20 @@
     "@react-navigation/material-bottom-tabs": "^5.3.15",
     "@react-navigation/material-top-tabs": "^5.3.15",
     "@react-navigation/native": "^5.9.4",
+    "@react-navigation/stack": "^5.14.5",
+    "@taoqf/react-native-mqtt": "^3.0.4",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
     "expo": "~41.0.1",
+    "expo-constants": "~10.1.3",
     "expo-splash-screen": "~0.10.2",
     "expo-status-bar": "~1.0.4",
     "expo-updates": "~0.5.4",
+    "express": "^4.17.1",
+    "firebase": "^8.6.3",
+    "mqtt": "^4.2.6",
+    "path": "^0.12.7",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
@@ -30,11 +41,24 @@
     "react-native-screens": "^3.0.0",
     "react-native-tab-view": "^2.16.0",
     "react-native-unimodules": "~0.13.3",
+<<<<<<< HEAD
     "react-native-web": "~0.13.12",
     "firebase": "8.2.3"
+=======
+    "react-native-uuid": "^2.0.1",
+    "react-native-web": "~0.13.12",
+    "react_native_mqtt": "^1.3.1",
+    "url": "^0.11.0",
+    "firebase": "8.2.3"
+>>>>>>> d756916b21bf81b9ac1a135b5bd22a4d7f4b8654
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
   },
-  "private": true
+  "private": true,
+  "name": "smarthomeapp",
+  "version": "1.0.0",
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
