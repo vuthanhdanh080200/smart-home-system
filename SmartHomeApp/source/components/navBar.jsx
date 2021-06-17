@@ -1,50 +1,42 @@
-import React from "react";
-import { Text, View, Image, StatusBar, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  Text,
+  View,
+  Image,
+  StatusBar,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Images from "../config/images";
 import Styles from "../config/styles";
 
 import HomeScreen from "../home-screen/homeScreen";
 import SettingsScreen from "../setting-screen/settingsSreen";
+import SystemScreen from "../system-screen/systemScreen";
 
+import Data from "../database/data";
 const Tab = createBottomTabNavigator();
 
-function ReportScreen() {
+function ReportScreen({ navigation, route }) {
+  const { Message } = route.params;
+  const onPressHandler = () => {
+    navigation.setParams({ Message: "DANH DEP TRAI" });
+  };
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Report!</Text>
+      <Button title="TEST" onPress={onPressHandler} />
+      <Text>{route.params.Message}</Text>
     </View>
   );
 }
-
-// function HomeScreen() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Text>Home!</Text>
-//     </View>
-//   );
-// }
-
-// function SettingsScreen() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Text>Settings!</Text>
-//     </View>
-//   );
-// }
 
 function NotificationScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Report!</Text>
-    </View>
-  );
-}
+  let text = Data.isTimerOn ? "Yes" : "No";
 
-function SystemScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>HAHA</Text>
+      <Text>{text}</Text>
     </View>
   );
 }
@@ -109,10 +101,19 @@ function MyTabBar({ state, navigation }) {
 }
 
 const NavBar = () => {
+  let mes = {
+    Message: "HOHO",
+  };
+
   return (
     <React.Fragment>
       <Tab.Navigator screenOptions={screenOptions} initialRouteName="Settings">
-        <Tab.Screen tabBar name="Report" component={ReportScreen} />
+        <Tab.Screen
+          tabBar
+          name="Report"
+          component={ReportScreen}
+          initialParams={mes}
+        />
         <Tab.Screen name="Settings" component={SettingsScreen} />
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Notification" component={NotificationScreen} />

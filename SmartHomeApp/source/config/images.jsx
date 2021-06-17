@@ -11,4 +11,6 @@ export default {
   switch: require("../assets/Switch.png"),
   shield: require("../assets/Shield.png"),
   fakeChart: require("../assets/FakeChart.png"),
+  dustBin: require("../assets/DustBin.png"),
+  line: require("../assets/Line.png"),
 };
