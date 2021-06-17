@@ -1,6 +1,25 @@
 import React, { useState } from "react";
 import { Text, View, Switch, Button } from "react-native";
 import Data from "../database/data";
+import { createStackNavigator } from "@react-navigation/stack";
+
+const Stack = createStackNavigator();
+
+function OtherSettingsStackScreen() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleStyle: {
+          fontWeight: "bold",
+          fontSize: 20,
+          color: "cyan",
+        },
+      }}
+    >
+      <Stack.Screen name="Other Settings" component={OtherSettingsScreen} />
+    </Stack.Navigator>
+  );
+}
 
 function OtherSettingsScreen() {
   return (
@@ -56,4 +75,4 @@ function itemSetting(isOn, nameItem) {
   );
 }
 
-export default OtherSettingsScreen;
+export default OtherSettingsStackScreen;

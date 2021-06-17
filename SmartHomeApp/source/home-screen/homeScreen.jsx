@@ -11,7 +11,31 @@ import {
 
 import Images from "../config/images";
 import Data from "../database/data";
+import { createStackNavigator } from "@react-navigation/stack";
 
+const Stack = createStackNavigator();
+
+function HomeStackScreen() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleStyle: {
+          fontWeight: "bold",
+          fontSize: 20,
+          color: "cyan",
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: "Home",
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 const HomeScreen = () => {
   const [isEnabled, setIsEnabled] = useState(Data.isSystemOn);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -22,40 +46,8 @@ const HomeScreen = () => {
 
   let homeScreen =
     isEnabled === true ? HomeScreenOn(state) : HomeScreenOff(state);
-  return (
-    <React.Fragment>
-      {HeaderBar()}
-      {homeScreen}
-    </React.Fragment>
-  );
+  return <React.Fragment>{homeScreen}</React.Fragment>;
 };
-
-function HeaderBar() {
-  return (
-    <View
-      style={{
-        height: 60,
-        backgroundColor: "white",
-        marginTop: StatusBar.currentHeight,
-        borderBottomWidth: 2,
-        borderBottomColor: "whitesmoke",
-      }}
-    >
-      <Text
-        style={{
-          flex: 1,
-          fontSize: 20,
-          textAlign: "left",
-          textAlignVertical: "center",
-          color: "cyan",
-          marginLeft: 10,
-        }}
-      >
-        Home
-      </Text>
-    </View>
-  );
-}
 
 function HomeScreenOff(state) {
   const imageSize = Dimensions.get("window").width * 0.7;
@@ -219,4 +211,4 @@ let SwitchStyles = {
   thumbColor: "#fff",
 };
 
-export default HomeScreen;
+export default HomeStackScreen;

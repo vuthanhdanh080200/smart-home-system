@@ -13,6 +13,7 @@ import Styles from "./styles";
 import Sw from "../components/switchButton";
 import Data from "../database/data";
 import Images from "../config/images";
+import { createStackNavigator } from "@react-navigation/stack";
 
 function HeaderBar() {
   return (
@@ -22,10 +23,26 @@ function HeaderBar() {
   );
 }
 
+const Stack = createStackNavigator();
+function LightTimerStackScreen() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleStyle: {
+          fontWeight: "bold",
+          fontSize: 20,
+          color: "cyan",
+        },
+      }}
+    >
+      <Stack.Screen name="Light timer" component={LightTimerScreen} />
+    </Stack.Navigator>
+  );
+}
+
 const LightTimerScreen = (props) => {
   return (
     <View style={{ flex: 1 }}>
-      {HeaderBar()}
       {Item()}
       {AddTime()}
     </View>
@@ -210,4 +227,4 @@ let SwitchStyles = {
   trackColor: { false: "#767577", true: "aqua" },
   thumbColor: "#fff",
 };
-export default LightTimerScreen;
+export default LightTimerStackScreen;
