@@ -214,7 +214,7 @@ function AntiTheftScreen() {
   );
 }
 
-SwitchStyles = {
+let SwitchStyles = {
   trackColor: { false: "#767577", true: "aqua" },
   thumbColor: "#fff",
 };

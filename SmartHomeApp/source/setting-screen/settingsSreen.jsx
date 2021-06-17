@@ -24,16 +24,16 @@ function AntiTheftTimerScreen() {
 
 const Drawer = createDrawerNavigator();
 
-function SettingsScreen() {
+const SettingsScreen = (props) => {
   return (
     <React.Fragment>
       {HeaderBar()}
       <Drawer.Navigator initialRouteName="Light timer">
-        <Drawer.Screen
-          options={{ title: "Light timer" }}
-          name="Light timer"
-          component={LightTimerScreen}
-        />
+        <Drawer.Screen options={{ title: "Light timer" }} name="Light timer">
+          {(props) => (
+            <LightTimerScreen state={props.state} onPress={props.onPress} />
+          )}
+        </Drawer.Screen>
         <Drawer.Screen
           options={{ title: "Anti theft timer" }}
           name="AntiTheft timer"
@@ -47,6 +47,6 @@ function SettingsScreen() {
       </Drawer.Navigator>
     </React.Fragment>
   );
-}
+};
 
 export default SettingsScreen;

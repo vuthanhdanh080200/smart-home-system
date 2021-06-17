@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { Switch } from "react-native";
 
-export default () => {
-  const [isEnabled, setIsEnabled] = useState(true);
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
-  };
+export default (isEnabled, toggleSwitch) => {
   return (
     <Switch
       trackColor={SwitchStyles.trackColor}
@@ -16,7 +12,7 @@ export default () => {
   );
 };
 
-SwitchStyles = {
+let SwitchStyles = {
   trackColor: { false: "#767577", true: "aqua" },
   thumbColor: "#fff",
 };

@@ -6,9 +6,13 @@ import {
   TouchableOpacity,
   Switch,
   Text,
+  Image,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Styles from "./styles";
+import Sw from "../components/switchButton";
+import Data from "../database/data";
+import Images from "../config/images";
 
 function HeaderBar() {
   return (
@@ -18,7 +22,7 @@ function HeaderBar() {
   );
 }
 
-const LightTimerScreen = () => {
+const LightTimerScreen = (props) => {
   return (
     <View style={{ flex: 1 }}>
       {HeaderBar()}
@@ -28,11 +32,10 @@ const LightTimerScreen = () => {
   );
 };
 
-const Item = () => {
-  const [date, setDate] = useState(new Date(1598051730000));
+const dateTimeItem = () => {
+  const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
@@ -44,50 +47,34 @@ const Item = () => {
     setMode(currentMode);
   };
 
-  const showDatePicker = () => {
+  const showDatepicker = () => {
     showMode("date");
   };
 
-  const dateTimeItem = (time, date) => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignSelf: "center",
-          flexDirection: "column",
-        }}
-      >
-        <Text
-          style={{
-            alignSelf: "flex-start",
-            flex: 0.5,
-            fontWeight: "bold",
-            fontSize: 30,
-            marginLeft: 15,
-          }}
-        >
-          {time}
-        </Text>
-        <Text
-          style={{
-            alignSelf: "flex-start",
-            flex: 0.25,
-            fontWeight: "bold",
-            fontSize: 15,
-            marginLeft: 20,
-          }}
-        >
-          {date}
-        </Text>
-      </View>
-    );
+  const showTimepicker = () => {
+    showMode("time");
   };
-  let dateTimePicker = (
-    <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+
+  let yyyy_mm_dd = date.toLocaleDateString();
+  let hh_mm = date.toLocaleTimeString().substr(0, 5);
+
+  return (
+    <View style={{ flex: 1, justifyContent: "center" }}>
+      <TouchableOpacity
+        style={Styles.touchableOpacity}
+        onPress={showTimepicker}
+      >
+        <Text style={Styles.textTimeItem}>{hh_mm}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={Styles.touchableOpacity}
+        onPress={showDatepicker}
+      >
+        <Text style={Styles.dateTimeItem}>{yyyy_mm_dd}</Text>
+      </TouchableOpacity>
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
-          timeZoneOffsetInMinutes={0}
           value={date}
           mode={mode}
           is24Hour={true}
@@ -97,53 +84,81 @@ const Item = () => {
       )}
     </View>
   );
+};
 
+const Item = () => {
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
   };
   let sw = (
     <Switch
+      style={{ marginTop: "20%" }}
       trackColor={SwitchStyles.trackColor}
       thumbColor={SwitchStyles.thumbColor}
       onValueChange={toggleSwitch}
       value={isEnabled}
     />
   );
+  let img = (
+    <Image
+      source={Images.dustBin}
+      style={{
+        alignSelf: "center",
+        marginTop: "5%",
+        marginLeft: "50%",
+        height: "50%",
+        width: "30%",
+      }}
+    />
+  );
   return (
     <View
       style={{
-        flex: 2,
+        backgroundColor: "#fff",
+        flex: 0.2,
+        flexDirection: "row-reverse",
+        borderLeftColor: "#fff",
+        borderRightColor: "#fff",
+        borderTopColor: "#fff",
+        borderBottomColor: "gray",
+        borderWidth: 3,
+        margin: 10,
       }}
     >
-      <TouchableOpacity
+      <View
         style={{
-          backgroundColor: "#fff",
-          flex: 0.25,
-          flexDirection: "row-reverse",
-          borderLeftColor: "#fff",
-          borderRightColor: "#fff",
-          borderTopColor: "#fff",
-          borderBottomColor: "gray",
-          borderWidth: 3,
-          margin: 10,
+          flex: 0.5,
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
-        onPress={showDatePicker}
       >
         {sw}
-        {dateTimeItem("5:30", "Today")}
-        <View style={{ flex: 0.25, justifyContent: "center" }}>
-          <Text style={{ fontSize: 50, marginBottom: 20 }}>-</Text>
-        </View>
-        {dateTimeItem("11:30", "Today")}
-      </TouchableOpacity>
-      {dateTimePicker}
+        <TouchableOpacity
+          onPress={() => {
+            console.log("HAHA");
+          }}
+        >
+          {img}
+        </TouchableOpacity>
+      </View>
+
+      {dateTimeItem()}
+      <Image
+        source={Images.line}
+        style={{
+          alignSelf: "center",
+          height: "50%",
+          width: "20%",
+        }}
+      />
+      {dateTimeItem()}
     </View>
   );
 };
 
 const AddTime = () => {
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
@@ -191,7 +206,7 @@ const AddTime = () => {
   );
 };
 
-SwitchStyles = {
+let SwitchStyles = {
   trackColor: { false: "#767577", true: "aqua" },
   thumbColor: "#fff",
 };

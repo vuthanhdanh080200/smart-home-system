@@ -18,7 +18,7 @@ export default StyleSheet.create({
     marginLeft: 10,
   },
 
-  // screen in settings screne
+  // screen in settings screen
   headerBarInSettings: {
     height: 50,
     backgroundColor: "aqua",
@@ -32,5 +32,19 @@ export default StyleSheet.create({
     textAlignVertical: "center",
     color: "white",
     marginLeft: 40,
+  },
+
+  // light timer screen in settings screen
+  touchableOpacity: {},
+
+  textTimeItem: {
+    fontWeight: "bold",
+    fontSize: 30,
+    marginLeft: "15%",
+  },
+  dateTimeItem: {
+    fontWeight: "bold",
+    fontSize: 15,
+    marginLeft: "15%",
   },
 });
