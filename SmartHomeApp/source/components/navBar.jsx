@@ -21,19 +21,6 @@ import ReportStackScreen from "../report-screen/reportScreen";
 import Data from "../database/data";
 const Tab = createBottomTabNavigator();
 
-function ReportScreen({ navigation, route }) {
-  const { Message } = route.params;
-  const onPressHandler = () => {
-    navigation.setParams({ Message: "DANH DEP TRAI" });
-  };
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Button title="TEST" onPress={onPressHandler} />
-      <Text>{route.params.Message}</Text>
-    </View>
-  );
-}
-
 const screenOptions = ({ route }) => ({
   tabBarIcon: () => {
     // You can return any component that you like here!

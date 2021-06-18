@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View, Switch, Button } from "react-native";
 import Data from "../database/data";
 import { createStackNavigator } from "@react-navigation/stack";
-
+import { sw, updateData } from "../api/firebaseApi";
 const Stack = createStackNavigator();
 
 function OtherSettingsStackScreen() {
@@ -21,33 +21,25 @@ function OtherSettingsStackScreen() {
   );
 }
 
+const defaultSettings = () => {
+  let data = {
+    isLightOn: false,
+    isWarningOn: false,
+  };
+  updateData("Danh", data);
+};
+
 function OtherSettingsScreen() {
   return (
     <React.Fragment>
-      {itemSetting(Data.isRemoteWarning, "Remote warning")}
-      {itemSetting(Data.isLightOn, "Switch to Anti Theft mode")}
-      <Button
-        title="Defaut settings"
-        onPress={() => console.log("default settings")}
-      />
+      {itemSetting("Remote warning", "Danh", "isWarningOn")}
+      {itemSetting("Switch to automatic light mode", "Danh", "isLightOn")}
+      <Button title="Defaut settings" onPress={defaultSettings} />
     </React.Fragment>
   );
 }
 
-function itemSetting(isOn, nameItem) {
-  const [isEnabled, setIsEnabled] = useState(isOn);
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
-  };
-  let sw = (
-    <Switch
-      trackColor={{ false: "#767577", true: "aqua" }}
-      thumbColor={"#fff"}
-      onValueChange={toggleSwitch}
-      value={isEnabled}
-    />
-  );
-
+function itemSetting(nameItem, path, field) {
   return (
     <View
       style={{
@@ -59,12 +51,17 @@ function itemSetting(isOn, nameItem) {
         margin: 10,
       }}
     >
-      {sw}
+      <View
+        style={{ flex: 1, justifyContent: "center", backgroundColor: "#fff" }}
+      >
+        {sw(path, field)}
+      </View>
       <Text
         style={{
+          marginLeft: 10,
           textAlign: "left",
           alignSelf: "center",
-          flex: 0.95,
+          flex: 2,
           fontWeight: "bold",
           fontSize: 15,
         }}

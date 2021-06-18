@@ -1,7 +1,16 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import { LogBox, SnapshotViewIOS } from "react-native";
-
+import React, { useState } from "react";
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Button,
+  Switch,
+} from "react-native";
 import { firebaseConfig } from "../config/firebase";
 import { City, cityConverter } from "../model/City";
 import { System, systemConverter } from "../model/System";
@@ -19,31 +28,64 @@ const addSystem = (key, system) => {
   systemsRef.doc(key).withConverter(systemConverter).set(system);
 };
 
-const getData = (key, field) => {
-  let systemsRef = db.collection("systems").doc(key);
-  const data = (system) => {
-    if (field == "isSystemOn") {
-      return system.isSystemOn;
-    }
+const addData = (path, data) => {
+  path = "systems/" + path;
+  let systemsRef = db.doc(path).set(data);
+};
+
+const getDataOnChange = (path, field, func) => {
+  path = "systems/" + path;
+  let systemsRef = db.doc(path);
+
+  systemsRef.onSnapshot({}, (doc) => {
+    func(doc.data()[field]);
+  });
+};
+
+const getCollection = (path, func) => {
+  path = "systems/" + path;
+  let systemsRef = db.collection(path);
+
+  systemsRef.get().then((querySnapshot) => {
+    func(querySnapshot);
+  });
+};
+
+const updateData = (path, data) => {
+  path = "systems/" + path;
+  let systemsRef = db.doc(path);
+  systemsRef.update(data);
+};
+
+const sw = (path, field) => {
+  path = "systems/" + path;
+  let systemsRef = db.doc(path);
+  const [isOn, setEnable] = useState(true);
+
+  const toggle = () => {
+    systemsRef.update({
+      [field]: !isOn,
+    });
   };
 
-  let re = systemsRef
-    .withConverter(systemConverter)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var system = doc.data();
-        if (field == "isSystemOn") {
-          return system.isSystemOn;
-        }
-      } else {
-        console.log("No such document!");
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting document:", error);
-    });
-  console.log(re);
+  systemsRef.onSnapshot({}, (doc) => {
+    if (doc.data()[field] == false) {
+      setEnable(false);
+    } else if (doc.data()[field] == true) {
+      setEnable(true);
+    }
+  });
+
+  let switchSystem = (
+    <Switch
+      trackColor={SwitchStyles.trackColor}
+      thumbColor={SwitchStyles.trackColor}
+      onValueChange={toggle}
+      value={isOn}
+    />
+  );
+
+  return <View>{switchSystem}</View>;
 };
 
 const addCity = (key, name, state, country) => {
@@ -144,6 +186,11 @@ const onPress1 = () => {
     });
 };
 
+let SwitchStyles = {
+  trackColor: { false: "#767577", true: "aqua" },
+  thumbColor: "#fff",
+};
+
 export {
   onPress,
   onPress1,
@@ -152,5 +199,10 @@ export {
   deleteCity,
   listenChange,
   addSystem,
-  getData,
+  addData,
+  getCollection,
+  getDataOnChange,
+  db,
+  sw,
+  updateData,
 };

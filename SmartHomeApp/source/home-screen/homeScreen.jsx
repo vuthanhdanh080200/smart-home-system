@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -12,6 +12,7 @@ import {
 import Images from "../config/images";
 import Data from "../database/data";
 import { createStackNavigator } from "@react-navigation/stack";
+import { sw, updateData, getDataOnChange } from "../api/firebaseApi";
 
 const Stack = createStackNavigator();
 
@@ -37,20 +38,17 @@ function HomeStackScreen() {
   );
 }
 const HomeScreen = () => {
-  const [isEnabled, setIsEnabled] = useState(Data.isSystemOn);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-
-  const state = {
-    switchSystem: [isEnabled, setIsEnabled, toggleSwitch],
-  };
-
-  let homeScreen =
-    isEnabled === true ? HomeScreenOn(state) : HomeScreenOff(state);
+  const [isOn, setEnable] = useState(false);
+  getDataOnChange("Danh", "isSystemOn", setEnable);
+  let homeScreen = isOn === true ? HomeScreenOn() : HomeScreenOff();
   return <React.Fragment>{homeScreen}</React.Fragment>;
 };
 
-function HomeScreenOff(state) {
+function HomeScreenOff() {
+  const [isOn, setEnable] = useState(true);
+  const [isOn1, setEnable1] = useState(true);
   const imageSize = Dimensions.get("window").width * 0.7;
+  let data = { isSystemOn: true };
   let imageXml = (
     <Image
       source={Images.powerButtonOff}
@@ -71,10 +69,7 @@ function HomeScreenOff(state) {
         alignItems: "center",
       }}
     >
-      <TouchableOpacity
-        onPress={state.switchSystem[2]}
-        value={state.switchSystem[0]}
-      >
+      <TouchableOpacity onPress={() => updateData("Danh", data)}>
         {imageXml}
       </TouchableOpacity>
       <Text
@@ -88,16 +83,7 @@ function HomeScreenOff(state) {
   );
 }
 
-function HomeScreenOn(state) {
-  let switchSystem = (
-    <Switch
-      trackColor={SwitchStyles.trackColor}
-      thumbColor={SwitchStyles.trackColor}
-      onValueChange={state.switchSystem[2]}
-      value={true}
-    />
-  );
-
+function HomeScreenOn() {
   let onSwitchBar = (
     <View
       style={{
@@ -109,7 +95,7 @@ function HomeScreenOn(state) {
         borderWidth: 1,
       }}
     >
-      {switchSystem}
+      {sw("Danh", "isSystemOn")}
       <Text
         style={{
           textAlign: "left",
@@ -124,7 +110,9 @@ function HomeScreenOn(state) {
     </View>
   );
 
-  let modeScreen = Data.isLightOn === true ? LightScreen() : AntiTheftScreen();
+  const [isOn, setEnable] = useState(false);
+  getDataOnChange("Danh", "isLightOn", setEnable);
+  let modeScreen = isOn === true ? LightScreen() : AntiTheftScreen();
   return (
     <View
       style={{

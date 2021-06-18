@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, Component } from "react";
 import {
   View,
   Button,
@@ -14,14 +14,7 @@ import Sw from "../components/switchButton";
 import Data from "../database/data";
 import Images from "../config/images";
 import { createStackNavigator } from "@react-navigation/stack";
-
-function HeaderBar() {
-  return (
-    <View style={Styles.headerBarInSettings}>
-      <Text style={Styles.textHeaderBarInSettings}>Light Timer</Text>
-    </View>
-  );
-}
+import { getCollection, addData } from "../api/firebaseApi";
 
 const Stack = createStackNavigator();
 function LightTimerStackScreen() {
@@ -40,10 +33,48 @@ function LightTimerStackScreen() {
   );
 }
 
-const LightTimerScreen = (props) => {
+class Items extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { items: [{ id: 1 }] };
+  }
+  // componentDidMount() {
+  //   getCollection("Danh/lightTimer", (querySnapshot) => {
+  //     var data = [];
+  //     querySnapshot.forEach((doc) => {
+  //       data.push(doc.data());
+  //     });
+  //     this.setState({ items: data });
+  //   });
+  // }
+
+  render() {
+    console.log(this.state.items);
+    return (
+      <React.Fragment>
+        {this.state.items.map((i) => {
+          Item(i);
+        })}
+      </React.Fragment>
+    );
+  }
+}
+
+const LightTimerScreen = () => {
+  [state, setState] = useState({ items: [{ id: 3 }, { id: 5 }, { id: 6 }] });
+  useEffect(() => {
+    getCollection("Danh/lightTimer", (querySnapshot) => {
+      var data = [];
+      querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+      });
+      setState({ items: data });
+    });
+  });
+  let items = state.items.map((item) => Item(item));
   return (
     <View style={{ flex: 1 }}>
-      {Item()}
+      {items}
       {AddTime()}
     </View>
   );
@@ -103,7 +134,7 @@ const dateTimeItem = () => {
   );
 };
 
-const Item = () => {
+const Item = (item) => {
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
@@ -131,6 +162,7 @@ const Item = () => {
   );
   return (
     <View
+      key={item.id}
       style={{
         backgroundColor: "#fff",
         flex: 0.2,
@@ -174,53 +206,19 @@ const Item = () => {
   );
 };
 
+const add = (querySnapshot) => {
+  var count = 0;
+  querySnapshot.forEach((doc) => {
+    count = count + 1;
+  });
+  let data = { id: count };
+  let path = "Danh/lightTimer/" + count;
+  addData(path, data);
+};
+
 const AddTime = () => {
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === "ios");
-    setDate(currentDate);
-  };
-
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
-  };
-
-  return (
-    <View style={{ flex: 1, flexDirection: "column-reverse", flexShrink: 1 }}>
-      <View
-        style={{
-          flex: 0.5,
-          justifyContent: "center",
-        }}
-      >
-        <Button onPress={showTimepicker} title="ADD" />
-      </View>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          timeZoneOffsetInMinutes={0}
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
-    </View>
-  );
+  let path = "Danh/lightTimer";
+  return <Button title="Add Timer" onPress={() => getCollection(path, add)} />;
 };
 
 let SwitchStyles = {
