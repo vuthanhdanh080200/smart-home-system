@@ -41,5 +41,5 @@ export default StyleSheet.create({
         fontSize: 10,
         color: '#9c9c9c',
         flex: 1,
-    }
+    },
 });
