@@ -4,11 +4,10 @@ import {
   View,
   Image,
   TouchableOpacity,
-  StatusBar,
   Button,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-//import { StatusBar } from "expo-status-bar";
+import { StatusBar } from "expo-status-bar";
 import Images from "../config/images";
 import Styles from "../config/styles";
 

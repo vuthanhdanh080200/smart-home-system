@@ -10,11 +10,10 @@ class database {
       measurementId: "G-YEWHCYX3S5",
     };
     var firestore = require("firebase/firestore");
-    var firebase = require("firebase");  
-    if (firebase.apps.length === 0) {
-      firebase.initializeApp(firebaseConfig);
-      console.log("Connected to firebase");
-    }
+    var firebase = require("firebase");
+    firebase.initializeApp(firebaseConfig);
+    console.log("Connected to firebase");
+    
     this.firestore = firebase.firestore();
   }
 }

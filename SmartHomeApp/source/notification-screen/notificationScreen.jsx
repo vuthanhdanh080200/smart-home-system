@@ -26,92 +26,73 @@ function NotificationStackScreen() {
     );
 }
 
-function item(data){
-  // const load = async() => {
-  //   const data = await database.load('systems','system');
-  //   return data.notifications;
-  // }
-  // // let notifications = await load();
-  // // console.log(notifications);
-  // load().then(
-  //   function(notifications){
-  //     console.log(notifications);
-  //     document.getElementById()
-  //   }
-  // );
-  let content = data.content;
-  let mark_as_read = data.read;
-  let time = data.time.toDate();
-  return(
-    <View style = {Style.container}>
-      <Image style = {Style.icon} source = {require('../assets/notification_item.png')} />
-      <View style = {Style.content}>
-        <Text> {content} </Text>
-        <Text> {time} </Text>
-      </View>
-    </View>
-  );
-}
-
 function item_list(){
-  let nots = () => {
-    database.firestore.collection('systems').doc('system').get().then((snapshot) => {
-      let notifications = snapshot.data().notifications;    
-      // for (var i=0; i<notifications.length; i++){
-      //   nots.push(item(notifications[i]))
-      // }
-      return (
-        <Text>ABC</Text>
-      );
+  const [DATA, setData] = useState(null);
+  // var data;
+  useEffect(() => {
+    database.firestore.collection('notifications').get().then((snapshot) => {
+      var data = [];
+      snapshot.forEach((doc) => {
+        data.push(doc.data())
+      });
+      setData({data});
     });
+  });
+  var data = [];
+  if(DATA != null){
+    DATA.data.forEach((ele)=>{
+      let id = ele.id;
+      let title = ele.content.title;
+
+      let time = ele.time.toDate();
+
+      let date = time.getDate().toString();
+
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      let month = months[time.getMonth()];
+
+      let year = time.getFullYear().toString();
+
+      let hour = time.getHours().toString();
+      let minute = time.getMinutes().toString();
+      let second =time.getSeconds().toString();
+
+      let fullTime = month + " " + date + " " + year + " at " + hour + ":" + minute + ":" + second;
+      
+      let content = ele.content.content;
+      data.push({id: id, title: title, content: content, time: fullTime})
+    })
   }
-  const DATA = [
-    {
-      id: '1',
-      title: 'First Item',
-    },
-    {
-      id: '2',
-      title: 'Second Item',
-    },
-    {
-      id: '3',
-      title: 'Third Item',
-    },
-  ];
-  
+
   const Item = ({ item }) => (
-    <TouchableOpacity style={Style.item}>
+    <View style={Style.item}>
       <Image style = {Style.icon} source = {require('../assets/notification_item.png')}/>
       <View style = {Style.content}>
-        <Text style={Style.item_text}>{item.title}</Text>
+        <Text style={Style.title}>{item.title}</Text>
+        <Text style={Style.item_content}>{item.content}</Text>
+        <Text style={Style.time}>{item.time}</Text>
       </View>      
-    </TouchableOpacity>
+    </View>
   );
 
   const renderItem = ({ item }) => {
-    // const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
-    // const color = item.id === selectedId ? 'white' : 'black';
     return(
       <Item
-        item = {item}  
-        //onPress = {() => setSelectedId(item.id)} 
-        // backgroundColor = {{ backgroundColor }} 
-        // textColor={{ color }}
+        item = {item}
       />
     )
   };
+
+
   return(
       <View style = {Style.container}>
         <FlatList
-          data={DATA}
+          data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
         />
       </View>
     );
-  console.log(nots)
-  return(nots());
 }
 const NotificationScreen = () => {  
   return (
