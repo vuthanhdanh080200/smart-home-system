@@ -51,6 +51,14 @@ const getCollection = (path, func) => {
   });
 };
 
+const getCollectionOnChange = (path, func) => {
+  path = "systems/" + path;
+  let systemsRef = db.collection(path);
+  systemsRef.onSnapshot((querySnapshot) => {
+    func(querySnapshot);
+  });
+};
+
 const updateData = (path, data) => {
   path = "systems/" + path;
   let systemsRef = db.doc(path);
@@ -201,6 +209,7 @@ export {
   addSystem,
   addData,
   getCollection,
+  getCollectionOnChange,
   getDataOnChange,
   db,
   sw,

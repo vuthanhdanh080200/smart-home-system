@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  StatusBar,
-  Button,
-} from "react-native";
+import { Text, View, Image, TouchableOpacity, Button } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-//import { StatusBar } from "expo-status-bar";
+import { StatusBar } from "expo-status-bar";
 import Images from "../config/images";
 import Styles from "../config/styles";
 
@@ -18,7 +11,6 @@ import SystemScreen from "../system-screen/systemScreen";
 import NotificationStackScreen from "../notification-screen/notificationScreen";
 import ReportStackScreen from "../report-screen/reportScreen";
 
-import Data from "../database/data";
 const Tab = createBottomTabNavigator();
 
 const screenOptions = ({ route }) => ({
