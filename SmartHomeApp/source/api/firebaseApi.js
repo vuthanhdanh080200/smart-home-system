@@ -1,7 +1,7 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import { LogBox, SnapshotViewIOS } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -33,12 +33,12 @@ const addData = (path, data) => {
   systemsRef.set(data);
 };
 
-const getDataOnChange = (path, field, func) => {
+const getDataOnChange = (path, func) => {
   path = "systems/" + path;
   let systemsRef = db.doc(path);
 
   systemsRef.onSnapshot({}, (doc) => {
-    func(doc.data()[field]);
+    func(doc.data());
   });
 };
 
@@ -81,20 +81,23 @@ const deleteData = (path) => {
 const sw = (path, field) => {
   path = "systems/" + path;
   let systemsRef = db.doc(path);
-  const [isOn, setEnable] = useState(true);
+  const [isOn, setEnable] = useState(false);
 
   const toggle = () => {
     systemsRef.update({
       [field]: !isOn,
     });
+    setEnable(!isOn);
   };
 
-  systemsRef.onSnapshot({}, (doc) => {
-    if (doc.data()[field] == false) {
-      setEnable(false);
-    } else if (doc.data()[field] == true) {
-      setEnable(true);
-    }
+  useEffect(() => {
+    systemsRef.onSnapshot({}, (doc) => {
+      if (doc.data()[field] == false) {
+        setEnable(false);
+      } else if (doc.data()[field] == true) {
+        setEnable(true);
+      }
+    });
   });
 
   let switchSystem = (

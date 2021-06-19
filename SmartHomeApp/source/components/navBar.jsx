@@ -40,7 +40,7 @@ const NavBar = () => {
   return (
     <React.Fragment>
       <StatusBar />
-      <Tab.Navigator screenOptions={screenOptions} initialRouteName="Settings">
+      <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
         <Tab.Screen tabBar name="Report" component={ReportStackScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
         <Tab.Screen name="Home" component={HomeStackScreen} />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StatusBar } from "react-native";
 import {
   createDrawerNavigator,

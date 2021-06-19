@@ -7,9 +7,18 @@ import {
   Dimensions,
   Button,
   Switch,
+  ScrollView,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { addCity, sw } from "../api/firebaseApi";
+import { updateData, addData } from "../api/firebaseApi";
+import {
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+} from "react-native-chart-kit";
+import LinePlot from "./component/linePlot";
 
 const ReportStack = createStackNavigator();
 
@@ -36,7 +45,46 @@ function ReportStackScreen() {
 }
 
 const ReportScreen = () => {
-  return <React.Fragment></React.Fragment>;
+  let dataMonths = {
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "July",
+      "June",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+    datasets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80],
+    legend: ["Rainy Days"], // optional
+  };
+
+  let dataHours = {
+    labels: ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
+    datasets: [10, 20, 100, 40, 20, 60],
+    legend: ["Rainy Days"], // optional
+  };
+
+  return (
+    <ScrollView style={{ backgroundColor: "snow" }}>
+      <View style={{ margin: 10, borderBottomWidth: 1 }}>
+        <Text style={{ textAlign: "left" }}>Hours</Text>
+      </View>
+      <LinePlot path={"day"} />
+      <View style={{ margin: 10, borderBottomWidth: 1 }}>
+        <Text style={{ textAlign: "left" }}>Months</Text>
+      </View>
+      <LinePlot path={"month"} />
+
+      {/* <Button title="ADD1" onPress={() => updateData("month", dataMonth)} />
+      <Button title="ADD2" onPress={() => updateData("day", dataDay)} /> */}
+    </ScrollView>
+  );
 };
 
 // function ReportScreen({ navigation, route }) {

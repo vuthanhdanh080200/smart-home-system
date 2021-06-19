@@ -5,9 +5,8 @@
     "name": "SmartHomeApp",
     "slug": "SmartHomeApp",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "orientation": "portrait",
+    "assetBundlePatterns": ["**/*"],
     "description": ""
   }
 }
