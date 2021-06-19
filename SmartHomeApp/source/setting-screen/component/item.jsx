@@ -7,26 +7,60 @@ import {
   Switch,
   Text,
   Image,
+  Alert,
 } from "react-native";
-import { getCollection, addData, sw } from "../../api/firebaseApi";
+import { deleteData, updateData } from "../../api/firebaseApi";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Styles from "../styles";
 import Images from "../../config/images";
 
-export default class Item extends Component {
+class DateTimeItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
       id: props.id,
-      isEnabled: props.isEnabled,
+      isBegin: props.isBegin,
       date: new Date(props.date),
-      mode: props.mode,
-      show: props.show,
+      otherDate: new Date(props.otherDate),
+      mode: "date",
+      show: false,
+      path: props.path,
     };
   }
 
   setDate = (currentDate) => {
-    this.setState({ date: currentDate });
+    let now = new Date();
+    let path = this.state.path + "/" + this.state.id;
+    console.log(path);
+    if (this.state.isBegin) {
+      if (
+        now.getTime() < currentDate.getTime() &&
+        currentDate.getTime() < this.state.otherDate.getTime()
+      ) {
+        updateData(path, { begin: currentDate.toString() });
+        this.setState({ date: currentDate });
+      } else {
+        Alert.alert("Your begin date is not valid", "Please set another date", [
+          {
+            text: "OK",
+          },
+        ]);
+      }
+    } else {
+      if (
+        now.getTime() < currentDate.getTime() &&
+        currentDate.getTime() > this.state.otherDate.getTime()
+      ) {
+        updateData(path, { end: currentDate.toString() });
+        this.setState({ date: currentDate });
+      } else {
+        Alert.alert("Your end date is not valid", "Please set another date", [
+          {
+            text: "OK",
+          },
+        ]);
+      }
+    }
   };
 
   setMode = (currentMode) => {
@@ -37,33 +71,7 @@ export default class Item extends Component {
     this.setState({ show: currentShow });
   };
 
-  toggleSwitch = () => {
-    this.setState({ isEnabled: !this.isEnabled });
-  };
-
   render() {
-    let sw = (
-      <Switch
-        style={{ marginTop: "20%" }}
-        trackColor={SwitchStyles.trackColor}
-        thumbColor={SwitchStyles.thumbColor}
-        onValueChange={this.toggleSwitch}
-        value={this.state.isEnabled}
-      />
-    );
-
-    let img = (
-      <Image
-        source={Images.dustBin}
-        style={{
-          alignSelf: "center",
-          marginTop: "5%",
-          marginLeft: "50%",
-          height: "50%",
-          width: "30%",
-        }}
-      />
-    );
     const onChange = (event, selectedDate) => {
       const currentDate = selectedDate || this.state.date;
       this.setShow(Platform.OS === "ios");
@@ -82,11 +90,10 @@ export default class Item extends Component {
     const showTimepicker = () => {
       showMode("time");
     };
-    console.log(this.state.date);
     let yyyy_mm_dd = this.state.date.toLocaleDateString();
     let hh_mm = this.state.date.toLocaleTimeString().substr(0, 5);
 
-    const dateTimeItem = (
+    return (
       <View style={{ flex: 1, justifyContent: "center" }}>
         <TouchableOpacity
           style={Styles.touchableOpacity}
@@ -112,6 +119,58 @@ export default class Item extends Component {
         )}
       </View>
     );
+  }
+}
+
+export default class Item extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: props.id,
+      isEnabled: props.isEnabled,
+      begin: props.begin,
+      end: props.end,
+      path: props.path,
+    };
+  }
+
+  deleteItem = () => {
+    let path = this.state.path + "/" + this.state.id;
+    deleteData(path);
+  };
+
+  toggleSwitch = () => {
+    let path = this.state.path + "/" + this.state.id;
+    updateData(path, { isEnabled: !this.state.isEnabled });
+    if (this.state.begin < this.state.end) {
+      this.setState({ isEnabled: !this.state.isEnabled });
+    }
+  };
+
+  render() {
+    let sw = (
+      <Switch
+        style={{ marginTop: "20%" }}
+        trackColor={SwitchStyles.trackColor}
+        thumbColor={SwitchStyles.thumbColor}
+        onValueChange={this.toggleSwitch}
+        value={this.state.isEnabled}
+      />
+    );
+
+    let img = (
+      <Image
+        source={Images.dustBin}
+        style={{
+          alignSelf: "center",
+          marginTop: "5%",
+          marginLeft: "50%",
+          height: "50%",
+          width: "30%",
+        }}
+      />
+    );
+
     return (
       <View
         key={this.id}
@@ -135,16 +194,16 @@ export default class Item extends Component {
           }}
         >
           {sw}
-          <TouchableOpacity
-            onPress={() => {
-              console.log("HAHA");
-            }}
-          >
-            {img}
-          </TouchableOpacity>
+          <TouchableOpacity onPress={this.deleteItem}>{img}</TouchableOpacity>
         </View>
 
-        {dateTimeItem}
+        <DateTimeItem
+          date={this.state.end}
+          otherDate={this.state.begin}
+          isBegin={false}
+          id={this.state.id}
+          path={this.state.path}
+        />
         <Image
           source={Images.line}
           style={{
@@ -153,7 +212,13 @@ export default class Item extends Component {
             width: "20%",
           }}
         />
-        {dateTimeItem}
+        <DateTimeItem
+          date={this.state.begin}
+          otherDate={this.state.end}
+          isBegin={true}
+          id={this.state.id}
+          path={this.state.path}
+        />
       </View>
     );
   }

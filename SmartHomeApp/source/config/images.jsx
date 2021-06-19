@@ -13,4 +13,6 @@ export default {
   fakeChart: require("../assets/FakeChart.png"),
   dustBin: require("../assets/DustBin.png"),
   line: require("../assets/Line.png"),
+  addButton: require("../assets/AddButton.png"),
+  toggleButton: require("../assets/ToggleButton.png"),
 };

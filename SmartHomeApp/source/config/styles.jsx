@@ -1,11 +1,12 @@
-import { StyleSheet, StatusBar } from "react-native";
+import { StyleSheet } from "react-native";
 import Constants from "expo-constants";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 export default StyleSheet.create({
   logo: {
     alignSelf: "flex-end",
     position: "absolute",
-    marginTop: 3,
+    marginTop: getStatusBarHeight(),
     height: 50,
     width: 50,
   },

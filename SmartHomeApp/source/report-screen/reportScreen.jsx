@@ -36,14 +36,7 @@ function ReportStackScreen() {
 }
 
 const ReportScreen = () => {
-  let isOn;
-  return (
-    <React.Fragment>
-      <Button title="add" onPress={() => addCity("SF", true, true, true)} />
-      {sw("Danh", "isSystemOn")}
-      {sw("Danh", "isLightOn")}
-    </React.Fragment>
-  );
+  return <React.Fragment></React.Fragment>;
 };
 
 // function ReportScreen({ navigation, route }) {

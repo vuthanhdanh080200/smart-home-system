@@ -3,21 +3,26 @@ import { Text, View, Switch, Button } from "react-native";
 import Data from "../database/data";
 import { createStackNavigator } from "@react-navigation/stack";
 import { sw, updateData } from "../api/firebaseApi";
+import toggleDrawer from "./component/toggleDrawer";
 const Stack = createStackNavigator();
 
-function OtherSettingsStackScreen() {
+function OtherSettingsStackScreen(props) {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitleStyle: {
-          fontWeight: "bold",
-          fontSize: 20,
-          color: "cyan",
-        },
-      }}
-    >
-      <Stack.Screen name="Other Settings" component={OtherSettingsScreen} />
-    </Stack.Navigator>
+    <React.Fragment>
+      <Stack.Navigator
+        screenOptions={{
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+            color: "cyan",
+            marginLeft: 40,
+          },
+        }}
+      >
+        <Stack.Screen name="Other Settings" component={OtherSettingsScreen} />
+      </Stack.Navigator>
+      {toggleDrawer(props)}
+    </React.Fragment>
   );
 }
 

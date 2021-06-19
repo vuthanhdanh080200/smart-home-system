@@ -7,57 +7,79 @@ import {
   Switch,
   Text,
   Image,
+  ScrollView,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { getCollection, addData, sw } from "../api/firebaseApi";
+import Images from "../config/images";
 import ListItems from "./component/listItems";
+import toggleDrawer from "./component/toggleDrawer";
 
 const Stack = createStackNavigator();
-function LightTimerStackScreen() {
+function LightTimerStackScreen(props) {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitleStyle: {
-          fontWeight: "bold",
-          fontSize: 20,
-          color: "cyan",
-        },
-      }}
-    >
-      <Stack.Screen name="Light timer" component={LightTimerScreen} />
-    </Stack.Navigator>
+    <React.Fragment>
+      <Stack.Navigator
+        screenOptions={{
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+            color: "cyan",
+            marginLeft: 40,
+          },
+        }}
+      >
+        <Stack.Screen
+          name="Light timer"
+          component={LightTimerScreen}
+          navigation={props}
+        />
+      </Stack.Navigator>
+      {toggleDrawer(props)}
+    </React.Fragment>
   );
 }
 
-const LightTimerScreen = () => {
+const LightTimerScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
-      <ListItems />
+      <ScrollView>
+        <ListItems path="Danh/lightTimer" />
+      </ScrollView>
+
       {AddTime()}
     </View>
   );
 };
 
-const add = (querySnapshot) => {
-  var count = 0;
-  querySnapshot.forEach((doc) => {
-    count = count + 1;
-  });
-  let date = new Date();
+const add = () => {
+  let begin = new Date();
+  begin.setHours(begin.getHours() + 1);
+  let end = new Date();
+  end.setHours(end.getHours() + 12);
+  console.log(begin.toString() > end.toString());
   let data = {
-    id: count,
     isEnabled: false,
-    date: date.toString(),
-    mode: "date",
-    show: false,
+    begin: begin.toString(),
+    end: end.toString(),
   };
-  let path = "Danh/lightTimer/" + count;
+  let path = "Danh/lightTimer/";
   addData(path, data);
 };
 
 const AddTime = () => {
-  let path = "Danh/lightTimer";
-  return <Button title="Add Timer" onPress={() => getCollection(path, add)} />;
+  let imageXml = (
+    <Image
+      source={Images.addButton}
+      style={{
+        resizeMode: "contain",
+        alignSelf: "center",
+        height: 50,
+        width: 50,
+      }}
+    />
+  );
+  return <TouchableOpacity onPress={add}>{imageXml}</TouchableOpacity>;
 };
 
 export default LightTimerStackScreen;
