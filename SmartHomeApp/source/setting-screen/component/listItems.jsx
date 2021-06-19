@@ -16,22 +16,21 @@ export default class listItems extends Component {
     super(props);
     this.state = {
       items: [],
+      path: props.path,
     };
   }
 
   componentDidMount() {
-    getCollectionOnChange("Danh/lightTimer", (querySnapshot) => {
+    getCollectionOnChange(this.state.path, (querySnapshot) => {
       var data = [];
       querySnapshot.forEach((doc) => {
-        data.push(doc.data());
+        let temp = doc.data();
+        temp["id"] = doc.id;
+        data.push(temp);
       });
       this.setState({ items: data });
     });
     console.log(this.state);
-  }
-
-  componentWillUnmount() {
-    this.setState({ items: [] });
   }
 
   render() {
@@ -42,10 +41,10 @@ export default class listItems extends Component {
             <Item
               id={props.id}
               isEnabled={props.isEnabled}
-              date={props.date}
-              mode={props.mode}
-              show={props.show}
+              begin={props.begin}
+              end={props.end}
               key={props.id}
+              path={this.state.path}
             />
           );
         })}
