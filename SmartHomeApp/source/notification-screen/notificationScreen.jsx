@@ -1,7 +1,6 @@
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 import item_list from './components/item_list'
-
 const NotificationStack = createStackNavigator();
 
 function NotificationStackScreen() {
