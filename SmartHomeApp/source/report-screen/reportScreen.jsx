@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Text,
+  TextInput,
   View,
   Image,
   TouchableOpacity,
@@ -8,9 +9,10 @@ import {
   Button,
   Switch,
   ScrollView,
+  Alert,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { updateData, addData } from "../api/firebaseApi";
+import { updateData, addData, getCollection } from "../api/firebaseApi";
 import {
   BarChart,
   PieChart,
@@ -19,12 +21,15 @@ import {
   StackedBarChart,
 } from "react-native-chart-kit";
 import LinePlot from "./component/linePlot";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import ReportDayStackScreen from "./reportDayScreen";
+import ReportMonthStackScreen from "./reportMonthScreen";
 
-const ReportStack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-function ReportStackScreen() {
+function ReportStackScreen(props) {
   return (
-    <ReportStack.Navigator
+    <Drawer.Navigator
       screenOptions={{
         headerTitleStyle: {
           fontWeight: "bold",
@@ -32,72 +37,24 @@ function ReportStackScreen() {
           color: "cyan",
         },
       }}
+      initialRouteName="report"
     >
-      <ReportStack.Screen
-        name="Report"
-        component={ReportScreen}
-        options={{
-          title: "Report",
-        }}
+      <Drawer.Screen
+        name="reportDay"
+        component={ReportDayStackScreen}
+        options={{ title: "Report Day" }}
+        navigation={props}
       />
-    </ReportStack.Navigator>
+      <Drawer.Screen
+        name="reportMonth"
+        component={ReportMonthStackScreen}
+        options={{
+          title: "Report Month",
+        }}
+        navigation={props}
+      />
+    </Drawer.Navigator>
   );
 }
-
-const ReportScreen = () => {
-  let dataMonths = {
-    labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "July",
-      "June",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ],
-    datasets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 90, 80],
-    legend: ["Rainy Days"], // optional
-  };
-
-  let dataHours = {
-    labels: ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
-    datasets: [10, 20, 100, 40, 20, 60],
-    legend: ["Rainy Days"], // optional
-  };
-
-  return (
-    <ScrollView style={{ backgroundColor: "snow" }}>
-      <View style={{ margin: 10, borderBottomWidth: 1 }}>
-        <Text style={{ textAlign: "left" }}>Hours</Text>
-      </View>
-      <LinePlot path={"day"} />
-      <View style={{ margin: 10, borderBottomWidth: 1 }}>
-        <Text style={{ textAlign: "left" }}>Months</Text>
-      </View>
-      <LinePlot path={"month"} />
-
-      {/* <Button title="ADD1" onPress={() => updateData("month", dataMonth)} />
-      <Button title="ADD2" onPress={() => updateData("day", dataDay)} /> */}
-    </ScrollView>
-  );
-};
-
-// function ReportScreen({ navigation, route }) {
-//   const { Message } = route.params;
-//   const onPressHandler = () => {
-//     navigation.setParams({ Message: "DANH DEP TRAI" });
-//   };
-//   return (
-//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//       <Button title="TEST" onPress={onPressHandler} />
-//       <Text>{route.params.Message}</Text>
-//     </View>
-//   );
-// }
 
 export default ReportStackScreen;

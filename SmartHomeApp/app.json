@@ -7,6 +7,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "assetBundlePatterns": ["**/*"],
-    "description": ""
+    "description": "",
+    "android": {
+      "package": "com.siunhandoan.SmartHomeIOT"
+    }
   }
 }

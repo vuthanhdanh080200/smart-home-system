@@ -23,10 +23,10 @@ export default class LinePlot extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      labels: [],
+      labels: props.labels,
       datasets: [
         {
-          data: [10],
+          data: props.data,
           color: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`, // optional
         },
       ],
@@ -35,33 +35,33 @@ export default class LinePlot extends Component {
     this.path = props.path;
   }
 
-  componentDidMount() {
-    getDataOnChange(this.path, (data) => {
-      this.setState({
-        labels: data.labels,
-        datasets: [
-          {
-            data: data.datasets,
-            color: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`, // optional
-          },
-        ],
-        legend: data.legend, // optional
-      });
-    });
-  }
+  // componentDidMount() {
+  //   getDataOnChange(this.path, (data) => {
+  //     this.setState({
+  //       labels: data.labels,
+  //       datasets: [
+  //         {
+  //           data: data.datasets,
+  //           color: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`, // optional
+  //         },
+  //       ],
+  //       legend: data.legend, // optional
+  //     });
+  //   });
+  // }
 
-  componentWillUnmount() {
-    this.setState({
-      labels: [],
-      datasets: [
-        {
-          data: [10],
-          color: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`, // optional
-        },
-      ],
-      legend: [], // optional
-    });
-  }
+  // componentWillUnmount() {
+  //   this.setState({
+  //     labels: [],
+  //     datasets: [
+  //       {
+  //         data: [10],
+  //         color: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`, // optional
+  //       },
+  //     ],
+  //     legend: [], // optional
+  //   });
+  // }
 
   render() {
     const chartConfig = {

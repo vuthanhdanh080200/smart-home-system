@@ -14,7 +14,7 @@ import { getCollection, addData, sw } from "../api/firebaseApi";
 import Images from "../config/images";
 import ListItems from "./component/listItems";
 import toggleDrawer from "./component/toggleDrawer";
-
+import path from "../config/path";
 const Stack = createStackNavigator();
 function LightTimerStackScreen(props) {
   return (
@@ -44,7 +44,7 @@ const LightTimerScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView>
-        <ListItems path="Danh/lightTimer" />
+        <ListItems path={path.lightTimer} />
       </ScrollView>
 
       {AddTime()}
@@ -63,8 +63,7 @@ const add = () => {
     begin: begin.toString(),
     end: end.toString(),
   };
-  let path = "Danh/lightTimer/";
-  addData(path, data);
+  addData(path.lightTimer, data);
 };
 
 const AddTime = () => {

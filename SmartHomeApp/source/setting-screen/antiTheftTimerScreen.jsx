@@ -14,7 +14,7 @@ import { getCollection, addData, sw } from "../api/firebaseApi";
 import Images from "../config/images";
 import ListItems from "./component/listItems";
 import toggleDrawer from "./component/toggleDrawer";
-
+import path from "../config/path";
 const Stack = createStackNavigator();
 
 function antiTheftTimerStackScreen(props) {
@@ -45,7 +45,7 @@ function AntiTheftTimerScreen({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView>
-        <ListItems path="Danh/antiTheftTimer" />
+        <ListItems path={path.antiTheftTimer} />
       </ScrollView>
 
       {AddTime()}
@@ -64,8 +64,7 @@ const add = () => {
     begin: begin.toString(),
     end: end.toString(),
   };
-  let path = "Danh/antiTheftTimer/";
-  addData(path, data);
+  addData(path.antiTheftTimer, data);
 };
 
 const AddTime = () => {

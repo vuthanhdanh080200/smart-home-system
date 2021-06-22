@@ -12,7 +12,7 @@ import {
   Switch,
 } from "react-native";
 import { firebaseConfig } from "../config/firebase";
-import { System, systemConverter } from "../model/System";
+import Images from "../config/images";
 
 // Initialize Firebase
 if (firebase.apps.length === 0) {
@@ -22,28 +22,26 @@ LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 
 const db = firebase.firestore();
 
-const addSystem = (key, system) => {
-  let systemsRef = db.collection("systems");
-  systemsRef.doc(key).withConverter(systemConverter).set(system);
-};
-
 const addData = (path, data) => {
-  path = "systems/" + path;
   let systemsRef = db.collection(path).doc();
   systemsRef.set(data);
 };
 
-const getDataOnChange = (path, func) => {
-  path = "systems/" + path;
+const getData = (path, func) => {
   let systemsRef = db.doc(path);
+  systemsRef.get().then((doc) => {
+    func(doc.data());
+  });
+};
 
+const getDataOnChange = (path, func) => {
+  let systemsRef = db.doc(path);
   systemsRef.onSnapshot({}, (doc) => {
     func(doc.data());
   });
 };
 
 const getCollection = (path, func) => {
-  path = "systems/" + path;
   let systemsRef = db.collection(path);
 
   systemsRef.get().then((querySnapshot) => {
@@ -52,7 +50,6 @@ const getCollection = (path, func) => {
 };
 
 const getCollectionOnChange = (path, func) => {
-  path = "systems/" + path;
   let systemsRef = db.collection(path);
   systemsRef.onSnapshot((querySnapshot) => {
     func(querySnapshot);
@@ -60,13 +57,11 @@ const getCollectionOnChange = (path, func) => {
 };
 
 const updateData = (path, data) => {
-  path = "systems/" + path;
   let systemsRef = db.doc(path);
   systemsRef.update(data);
 };
 
 const deleteData = (path) => {
-  path = "systems/" + path;
   let systemRef = db.doc(path);
   systemRef
     .delete()
@@ -79,7 +74,6 @@ const deleteData = (path) => {
 };
 
 const sw = (path, field) => {
-  path = "systems/" + path;
   let systemsRef = db.doc(path);
   const [isOn, setEnable] = useState(false);
 
@@ -87,17 +81,14 @@ const sw = (path, field) => {
     systemsRef.update({
       [field]: !isOn,
     });
-    setEnable(!isOn);
   };
 
-  useEffect(() => {
-    systemsRef.onSnapshot({}, (doc) => {
-      if (doc.data()[field] == false) {
-        setEnable(false);
-      } else if (doc.data()[field] == true) {
-        setEnable(true);
-      }
-    });
+  systemsRef.onSnapshot({}, (doc) => {
+    if (doc.data()[field] == false) {
+      setEnable(false);
+    } else if (doc.data()[field] == true) {
+      setEnable(true);
+    }
   });
 
   let switchSystem = (
@@ -112,19 +103,61 @@ const sw = (path, field) => {
   return <View>{switchSystem}</View>;
 };
 
+const imgSw = (path, field) => {
+  let systemsRef = db.doc(path);
+  const [isOn, setEnable] = useState(false);
+
+  const toggle = () => {
+    systemsRef.update({
+      [field]: !isOn,
+    });
+    //setEnable(!isOn);
+  };
+
+  systemsRef.onSnapshot({}, (doc) => {
+    if (doc.data()[field] == false) {
+      setEnable(false);
+    } else if (doc.data()[field] == true) {
+      setEnable(true);
+    }
+  });
+
+  const imageSize = Dimensions.get("window").width * 0.4;
+  let imageXml = (
+    <Image
+      source={Images.powerButtonOff}
+      style={{
+        resizeMode: "contain",
+        height: imageSize,
+        width: imageSize,
+        marginBottom: "10%",
+      }}
+    />
+  );
+
+  let imgSwitch = (
+    <TouchableOpacity onPress={toggle} style={{ margin: 20 }}>
+      {imageXml}
+    </TouchableOpacity>
+  );
+
+  return <View>{imgSwitch}</View>;
+};
+
 let SwitchStyles = {
   trackColor: { false: "#767577", true: "aqua" },
   thumbColor: "#fff",
 };
 
 export {
-  addSystem,
   addData,
   getCollection,
   getCollectionOnChange,
+  getData,
   getDataOnChange,
   db,
   sw,
+  imgSw,
   updateData,
   deleteData,
 };

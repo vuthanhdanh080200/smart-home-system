@@ -4,6 +4,8 @@ import Data from "../database/data";
 import { createStackNavigator } from "@react-navigation/stack";
 import { sw, updateData } from "../api/firebaseApi";
 import toggleDrawer from "./component/toggleDrawer";
+import path from "../config/path";
+
 const Stack = createStackNavigator();
 
 function OtherSettingsStackScreen(props) {
@@ -31,14 +33,18 @@ const defaultSettings = () => {
     isLightOn: false,
     isWarningOn: false,
   };
-  updateData("Danh", data);
+  updateData(path.isSystemOn, data);
 };
 
 function OtherSettingsScreen() {
   return (
     <React.Fragment>
-      {itemSetting("Remote warning", "Danh", "isWarningOn")}
-      {itemSetting("Switch to automatic light mode", "Danh", "isLightOn")}
+      {itemSetting("Remote warning", path.isWarningOn, "isWarningOn")}
+      {itemSetting(
+        "Switch to automatic light mode",
+        path.isLightOn,
+        "isLightOn"
+      )}
       <Button title="Defaut settings" onPress={defaultSettings} />
     </React.Fragment>
   );
