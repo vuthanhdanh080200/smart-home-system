@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Button,
-} from "react-native";
+import { Text, View, Image, TouchableOpacity, Button } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar } from "expo-status-bar";
 import Images from "../config/images";
@@ -16,23 +10,9 @@ import SettingsScreen from "../setting-screen/settingsSreen";
 import SystemScreen from "../system-screen/systemScreen";
 import NotificationStackScreen from "../notification-screen/notificationScreen";
 import ReportStackScreen from "../report-screen/reportScreen";
-
-import dataProcess from '../notification-screen/dataProcess';
+import dataProcess from "../notification-screen/dataProcess";
 
 const Tab = createBottomTabNavigator();
-
-function ReportScreen({ navigation, route }) {
-  const { Message } = route.params;
-  const onPressHandler = () => {
-    navigation.setParams({ Message: "DANH DEP TRAI" });
-  };
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Button title="TEST" onPress={onPressHandler} />
-      <Text>{route.params.Message}</Text>
-    </View>
-  );
-}
 
 const screenOptions = ({ route }) => ({
   tabBarIcon: () => {
@@ -60,21 +40,25 @@ const screenOptions = ({ route }) => ({
 const NavBar = () => {
   const data = dataProcess();
   var notification_count = 0;
-  for (let i = 0; i < data.length; i++){
-    if(data[i].read == false) notification_count++;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].read == false) notification_count++;
   }
   var tabBarBadge_option = () => {
-    if ( notification_count != 0) return {tabBarBadge: notification_count};
+    if (notification_count != 0) return { tabBarBadge: notification_count };
     else return {};
-  }
+  };
   return (
     <React.Fragment>
       <StatusBar />
-      <Tab.Navigator screenOptions={screenOptions} initialRouteName="Settings">
+      <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
         <Tab.Screen tabBar name="Report" component={ReportStackScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
         <Tab.Screen name="Home" component={HomeStackScreen} />
-        <Tab.Screen name="Notification" component={NotificationStackScreen} options={tabBarBadge_option}/>
+        <Tab.Screen
+          name="Notification"
+          component={NotificationStackScreen}
+          options={tabBarBadge_option}
+        />
         <Tab.Screen name="System" component={SystemScreen} />
       </Tab.Navigator>
       <Image source={Images.logo} style={Styles.logo} />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, Component } from "react";
 import {
   View,
   Button,
@@ -7,224 +7,78 @@ import {
   Switch,
   Text,
   Image,
+  ScrollView,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import Styles from "./styles";
-import Sw from "../components/switchButton";
-import Data from "../database/data";
-import Images from "../config/images";
 import { createStackNavigator } from "@react-navigation/stack";
-
-function HeaderBar() {
-  return (
-    <View style={Styles.headerBarInSettings}>
-      <Text style={Styles.textHeaderBarInSettings}>Light Timer</Text>
-    </View>
-  );
-}
-
+import { getCollection, addData, sw } from "../api/firebaseApi";
+import Images from "../config/images";
+import ListItems from "./component/listItems";
+import toggleDrawer from "./component/toggleDrawer";
+import path from "../config/path";
 const Stack = createStackNavigator();
-function LightTimerStackScreen() {
+function LightTimerStackScreen(props) {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitleStyle: {
-          fontWeight: "bold",
-          fontSize: 20,
-          color: "cyan",
-        },
-      }}
-    >
-      <Stack.Screen name="Light timer" component={LightTimerScreen} />
-    </Stack.Navigator>
+    <React.Fragment>
+      <Stack.Navigator
+        screenOptions={{
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+            color: "cyan",
+            marginLeft: 40,
+          },
+        }}
+      >
+        <Stack.Screen
+          name="Light timer"
+          component={LightTimerScreen}
+          navigation={props}
+        />
+      </Stack.Navigator>
+      {toggleDrawer(props)}
+    </React.Fragment>
   );
 }
 
-const LightTimerScreen = (props) => {
+const LightTimerScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
-      {Item()}
+      <ScrollView>
+        <ListItems path={path.lightTimer} />
+      </ScrollView>
+
       {AddTime()}
     </View>
   );
 };
 
-const dateTimeItem = () => {
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === "ios");
-    setDate(currentDate);
+const add = () => {
+  let begin = new Date();
+  begin.setHours(begin.getHours() + 1);
+  let end = new Date();
+  end.setHours(end.getHours() + 12);
+  console.log(begin.toString() > end.toString());
+  let data = {
+    isEnabled: false,
+    begin: begin.toString(),
+    end: end.toString(),
   };
-
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
-  };
-
-  let yyyy_mm_dd = date.toLocaleDateString();
-  let hh_mm = date.toLocaleTimeString().substr(0, 5);
-
-  return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
-      <TouchableOpacity
-        style={Styles.touchableOpacity}
-        onPress={showTimepicker}
-      >
-        <Text style={Styles.textTimeItem}>{hh_mm}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={Styles.touchableOpacity}
-        onPress={showDatepicker}
-      >
-        <Text style={Styles.dateTimeItem}>{yyyy_mm_dd}</Text>
-      </TouchableOpacity>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
-    </View>
-  );
-};
-
-const Item = () => {
-  const [isEnabled, setIsEnabled] = useState(true);
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
-  };
-  let sw = (
-    <Switch
-      style={{ marginTop: "20%" }}
-      trackColor={SwitchStyles.trackColor}
-      thumbColor={SwitchStyles.thumbColor}
-      onValueChange={toggleSwitch}
-      value={isEnabled}
-    />
-  );
-  let img = (
-    <Image
-      source={Images.dustBin}
-      style={{
-        alignSelf: "center",
-        marginTop: "5%",
-        marginLeft: "50%",
-        height: "50%",
-        width: "30%",
-      }}
-    />
-  );
-  return (
-    <View
-      style={{
-        backgroundColor: "#fff",
-        flex: 0.2,
-        flexDirection: "row-reverse",
-        borderLeftColor: "#fff",
-        borderRightColor: "#fff",
-        borderTopColor: "#fff",
-        borderBottomColor: "gray",
-        borderWidth: 3,
-        margin: 10,
-      }}
-    >
-      <View
-        style={{
-          flex: 0.5,
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        {sw}
-        <TouchableOpacity
-          onPress={() => {
-            console.log("HAHA");
-          }}
-        >
-          {img}
-        </TouchableOpacity>
-      </View>
-
-      {dateTimeItem()}
-      <Image
-        source={Images.line}
-        style={{
-          alignSelf: "center",
-          height: "50%",
-          width: "20%",
-        }}
-      />
-      {dateTimeItem()}
-    </View>
-  );
+  addData(path.lightTimer, data);
 };
 
 const AddTime = () => {
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === "ios");
-    setDate(currentDate);
-  };
-
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
-  };
-
-  return (
-    <View style={{ flex: 1, flexDirection: "column-reverse", flexShrink: 1 }}>
-      <View
-        style={{
-          flex: 0.5,
-          justifyContent: "center",
-        }}
-      >
-        <Button onPress={showTimepicker} title="ADD" />
-      </View>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          timeZoneOffsetInMinutes={0}
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
-    </View>
+  let imageXml = (
+    <Image
+      source={Images.addButton}
+      style={{
+        resizeMode: "contain",
+        alignSelf: "center",
+        height: 50,
+        width: 50,
+      }}
+    />
   );
+  return <TouchableOpacity onPress={add}>{imageXml}</TouchableOpacity>;
 };
 
-let SwitchStyles = {
-  trackColor: { false: "#767577", true: "aqua" },
-  thumbColor: "#fff",
-};
 export default LightTimerStackScreen;

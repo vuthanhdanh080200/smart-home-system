@@ -1,32 +1,85 @@
-import React, { useState } from "react";
-import { Text, View, Switch, Button } from "react-native";
-import Data from "../database/data";
+import React, { useState, useEffect, Component } from "react";
+import {
+  View,
+  Button,
+  Platform,
+  TouchableOpacity,
+  Switch,
+  Text,
+  Image,
+  ScrollView,
+} from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-
+import { getCollection, addData, sw } from "../api/firebaseApi";
+import Images from "../config/images";
+import ListItems from "./component/listItems";
+import toggleDrawer from "./component/toggleDrawer";
+import path from "../config/path";
 const Stack = createStackNavigator();
 
-function antiTheftTimerStackScreen() {
+function antiTheftTimerStackScreen(props) {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitleStyle: {
-          fontWeight: "bold",
-          fontSize: 20,
-          color: "cyan",
-        },
-      }}
-    >
-      <Stack.Screen name="Anti theft timer" component={AntiTheftTimerScreen} />
-    </Stack.Navigator>
+    <React.Fragment>
+      <Stack.Navigator
+        screenOptions={{
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+            color: "cyan",
+            marginLeft: 40,
+          },
+        }}
+      >
+        <Stack.Screen
+          name="Anti theft timer"
+          component={AntiTheftTimerScreen}
+          navigation={props}
+        />
+      </Stack.Navigator>
+      {toggleDrawer(props)}
+    </React.Fragment>
   );
 }
 
-function AntiTheftTimerScreen() {
+function AntiTheftTimerScreen({ navigation }) {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>AntiTheftTimerScreen!</Text>
+    <View style={{ flex: 1 }}>
+      <ScrollView>
+        <ListItems path={path.antiTheftTimer} />
+      </ScrollView>
+
+      {AddTime()}
     </View>
   );
 }
+
+const add = () => {
+  let begin = new Date();
+  begin.setHours(begin.getHours() + 1);
+  let end = new Date();
+  end.setHours(end.getHours() + 12);
+  console.log(begin.toString() > end.toString());
+  let data = {
+    isEnabled: false,
+    begin: begin.toString(),
+    end: end.toString(),
+  };
+  addData(path.antiTheftTimer, data);
+};
+
+const AddTime = () => {
+  let imageXml = (
+    <Image
+      source={Images.addButton}
+      style={{
+        resizeMode: "contain",
+        alignSelf: "center",
+        height: 50,
+        width: 50,
+      }}
+    />
+  );
+  return <TouchableOpacity onPress={add}>{imageXml}</TouchableOpacity>;
+};
 
 export default antiTheftTimerStackScreen;

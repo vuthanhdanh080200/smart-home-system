@@ -1,10 +1,18 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import { LogBox, SnapshotViewIOS } from "react-native";
-
+import React, { useState, useEffect } from "react";
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Button,
+  Switch,
+} from "react-native";
 import { firebaseConfig } from "../config/firebase";
-import { City, cityConverter } from "../model/City";
-import { System, systemConverter } from "../model/System";
+import Images from "../config/images";
 
 // Initialize Firebase
 if (firebase.apps.length === 0) {
@@ -14,56 +22,48 @@ LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 
 const db = firebase.firestore();
 
-const addSystem = (key, system) => {
-  let systemsRef = db.collection("systems");
-  systemsRef.doc(key).withConverter(systemConverter).set(system);
+const addData = (path, data) => {
+  let systemsRef = db.collection(path).doc();
+  systemsRef.set(data);
 };
 
-const getData = (key, field) => {
-  let systemsRef = db.collection("systems").doc(key);
-  const data = (system) => {
-    if (field == "isSystemOn") {
-      return system.isSystemOn;
-    }
-  };
-
-  let re = systemsRef
-    .withConverter(systemConverter)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var system = doc.data();
-        if (field == "isSystemOn") {
-          return system.isSystemOn;
-        }
-      } else {
-        console.log("No such document!");
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting document:", error);
-    });
-  console.log(re);
+const getData = (path, func) => {
+  let systemsRef = db.doc(path);
+  systemsRef.get().then((doc) => {
+    func(doc.data());
+  });
 };
 
-const addCity = (key, name, state, country) => {
-  var citiesRef = db.collection("cities");
-
-  citiesRef
-    .doc(key)
-    .withConverter(cityConverter)
-    .set(new City(name, state, country));
+const getDataOnChange = (path, func) => {
+  let systemsRef = db.doc(path);
+  systemsRef.onSnapshot({}, (doc) => {
+    func(doc.data());
+  });
 };
 
-const updateCity = (key, name, state, country) => {
-  var citiesRef = db.collection("cities");
-  citiesRef.doc(key).update({ name: name, state: state, country: country });
+const getCollection = (path, func) => {
+  let systemsRef = db.collection(path);
+
+  systemsRef.get().then((querySnapshot) => {
+    func(querySnapshot);
+  });
 };
 
-const deleteCity = (key) => {
-  var citiesRef = db.collection("cities");
-  citiesRef
-    .doc(key)
+const getCollectionOnChange = (path, func) => {
+  let systemsRef = db.collection(path);
+  systemsRef.onSnapshot((querySnapshot) => {
+    func(querySnapshot);
+  });
+};
+
+const updateData = (path, data) => {
+  let systemsRef = db.doc(path);
+  systemsRef.update(data);
+};
+
+const deleteData = (path) => {
+  let systemRef = db.doc(path);
+  systemRef
     .delete()
     .then(() => {
       console.log("Document successfully deleted!");
@@ -73,84 +73,91 @@ const deleteCity = (key) => {
     });
 };
 
-const listenChange = () => {
-  db.collection("cities")
-    .doc("SF")
-    .onSnapshot((doc) => {
-      console.log("Current data: ", doc.data());
+const sw = (path, field) => {
+  let systemsRef = db.doc(path);
+  const [isOn, setEnable] = useState(false);
+
+  const toggle = () => {
+    systemsRef.update({
+      [field]: !isOn,
     });
+  };
+
+  systemsRef.onSnapshot({}, (doc) => {
+    if (doc.data()[field] == false) {
+      setEnable(false);
+    } else if (doc.data()[field] == true) {
+      setEnable(true);
+    }
+  });
+
+  let switchSystem = (
+    <Switch
+      trackColor={SwitchStyles.trackColor}
+      thumbColor={SwitchStyles.trackColor}
+      onValueChange={toggle}
+      value={isOn}
+    />
+  );
+
+  return <View>{switchSystem}</View>;
 };
 
-const onPress = () => {
-  var citiesRef = db.collection("cities");
+const imgSw = (path, field) => {
+  let systemsRef = db.doc(path);
+  const [isOn, setEnable] = useState(false);
 
-  citiesRef.doc("SF").set({
-    name: "San Francisco",
-    state: "CA",
-    country: "USA",
-    capital: false,
-    population: 860000,
-    regions: ["west_coast", "norcal"],
+  const toggle = () => {
+    systemsRef.update({
+      [field]: !isOn,
+    });
+    //setEnable(!isOn);
+  };
+
+  systemsRef.onSnapshot({}, (doc) => {
+    if (doc.data()[field] == false) {
+      setEnable(false);
+    } else if (doc.data()[field] == true) {
+      setEnable(true);
+    }
   });
-  citiesRef.doc("LA").set({
-    name: "Los Angeles",
-    state: "CA",
-    country: "USA",
-    capital: false,
-    population: 3900000,
-    regions: ["west_coast", "socal"],
-  });
-  citiesRef.doc("DC").set({
-    name: "Washington, D.C.",
-    state: null,
-    country: "USA",
-    capital: true,
-    population: 680000,
-    regions: ["east_coast"],
-  });
-  citiesRef.doc("TOK").set({
-    name: "Tokyo",
-    state: null,
-    country: "Japan",
-    capital: true,
-    population: 9000000,
-    regions: ["kanto", "honshu"],
-  });
-  citiesRef.doc("BJ").set({
-    name: "Beijing",
-    state: null,
-    country: "China",
-    capital: true,
-    population: 21500000,
-    regions: ["jingjinji", "hebei"],
-  });
+
+  const imageSize = Dimensions.get("window").width * 0.4;
+  let imageXml = (
+    <Image
+      source={Images.powerButtonOff}
+      style={{
+        resizeMode: "contain",
+        height: imageSize,
+        width: imageSize,
+        marginBottom: "10%",
+      }}
+    />
+  );
+
+  let imgSwitch = (
+    <TouchableOpacity onPress={toggle} style={{ margin: 20 }}>
+      {imageXml}
+    </TouchableOpacity>
+  );
+
+  return <View>{imgSwitch}</View>;
 };
 
-const onPress1 = () => {
-  var docRef = db.collection("cities").doc("SF");
-
-  docRef
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        console.log("Document data:", doc.data());
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting document:", error);
-    });
+let SwitchStyles = {
+  trackColor: { false: "#767577", true: "aqua" },
+  thumbColor: "#fff",
 };
 
 export {
-  onPress,
-  onPress1,
-  addCity,
-  updateCity,
-  deleteCity,
-  listenChange,
-  addSystem,
+  addData,
+  getCollection,
+  getCollectionOnChange,
   getData,
+  getDataOnChange,
+  db,
+  sw,
+  imgSw,
+  updateData,
+  deleteData,
 };

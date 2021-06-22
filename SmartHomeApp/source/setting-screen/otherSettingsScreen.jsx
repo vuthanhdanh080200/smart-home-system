@@ -2,52 +2,55 @@ import React, { useState } from "react";
 import { Text, View, Switch, Button } from "react-native";
 import Data from "../database/data";
 import { createStackNavigator } from "@react-navigation/stack";
+import { sw, updateData } from "../api/firebaseApi";
+import toggleDrawer from "./component/toggleDrawer";
+import path from "../config/path";
 
 const Stack = createStackNavigator();
 
-function OtherSettingsStackScreen() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitleStyle: {
-          fontWeight: "bold",
-          fontSize: 20,
-          color: "cyan",
-        },
-      }}
-    >
-      <Stack.Screen name="Other Settings" component={OtherSettingsScreen} />
-    </Stack.Navigator>
-  );
-}
-
-function OtherSettingsScreen() {
+function OtherSettingsStackScreen(props) {
   return (
     <React.Fragment>
-      {itemSetting(Data.isRemoteWarning, "Remote warning")}
-      {itemSetting(Data.isLightOn, "Switch to Anti Theft mode")}
-      <Button
-        title="Defaut settings"
-        onPress={() => console.log("default settings")}
-      />
+      <Stack.Navigator
+        screenOptions={{
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+            color: "cyan",
+            marginLeft: 40,
+          },
+        }}
+      >
+        <Stack.Screen name="Other Settings" component={OtherSettingsScreen} />
+      </Stack.Navigator>
+      {toggleDrawer(props)}
     </React.Fragment>
   );
 }
 
-function itemSetting(isOn, nameItem) {
-  const [isEnabled, setIsEnabled] = useState(isOn);
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
+const defaultSettings = () => {
+  let data = {
+    isLightOn: false,
+    isWarningOn: false,
   };
-  let sw = (
-    <Switch
-      trackColor={{ false: "#767577", true: "aqua" }}
-      thumbColor={"#fff"}
-      onValueChange={toggleSwitch}
-      value={isEnabled}
-    />
-  );
+  updateData(path.isSystemOn, data);
+};
 
+function OtherSettingsScreen() {
+  return (
+    <React.Fragment>
+      {itemSetting("Remote warning", path.isWarningOn, "isWarningOn")}
+      {itemSetting(
+        "Switch to automatic light mode",
+        path.isLightOn,
+        "isLightOn"
+      )}
+      <Button title="Defaut settings" onPress={defaultSettings} />
+    </React.Fragment>
+  );
+}
+
+function itemSetting(nameItem, path, field) {
   return (
     <View
       style={{
@@ -59,12 +62,17 @@ function itemSetting(isOn, nameItem) {
         margin: 10,
       }}
     >
-      {sw}
+      <View
+        style={{ flex: 1, justifyContent: "center", backgroundColor: "#fff" }}
+      >
+        {sw(path, field)}
+      </View>
       <Text
         style={{
+          marginLeft: 10,
           textAlign: "left",
           alignSelf: "center",
-          flex: 0.95,
+          flex: 2,
           fontWeight: "bold",
           fontSize: 15,
         }}

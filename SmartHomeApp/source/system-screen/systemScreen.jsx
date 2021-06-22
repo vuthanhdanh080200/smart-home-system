@@ -1,14 +1,11 @@
 import React from "react";
 import { Text, View, StatusBar, Button } from "react-native";
 import Styles from "../config/styles";
-import { addSystem, getData } from "../api/firebaseApi";
-import { System } from "../model/System";
 const SystemScreen = () => {
-  let system = new System(false, false);
-  let isSystemOn = getData("Danh", "isSystemOn");
   return (
-    <View style={Styles.normal}>
-      <Button title="Add" onPress={() => addSystem("Danh", system)} />
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>DEVELOPER BY TEAM </Text>
+      <Text style={{ color: "cyan", fontSize: 20 }}> SIU NHAN DO AN </Text>
     </View>
   );
 };

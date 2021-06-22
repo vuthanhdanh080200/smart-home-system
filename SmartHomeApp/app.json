@@ -5,9 +5,11 @@
     "name": "SmartHomeApp",
     "slug": "SmartHomeApp",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "description": ""
+    "orientation": "portrait",
+    "assetBundlePatterns": ["**/*"],
+    "description": "",
+    "android": {
+      "package": "com.siunhandoan.SmartHomeIOT"
+    }
   }
 }
