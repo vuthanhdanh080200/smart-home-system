@@ -183,7 +183,7 @@ const ReportMonthScreen = () => {
         title="add"
         onPress={() => fakeData.map((i) => addData("reports", i))}
       /> */}
-      <Button title="submit" onPress={submit} />
+      <Button title="select" onPress={submit} />
       {show && <LinePlot labels={labels} data={data} />}
       {show && (
         <Text

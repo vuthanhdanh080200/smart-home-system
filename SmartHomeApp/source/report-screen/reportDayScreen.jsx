@@ -162,7 +162,7 @@ const ReportDayScreen = () => {
         placeholder="Input day to see report"
         value={text}
       />
-      <Button title="submit" onPress={submit} />
+      <Button title="select" onPress={submit} />
       {show && <LinePlot labels={labels} data={data} />}
       {show && (
         <Text

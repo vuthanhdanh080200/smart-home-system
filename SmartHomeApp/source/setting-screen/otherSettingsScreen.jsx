@@ -43,7 +43,7 @@ function OtherSettingsScreen() {
       {itemSetting(
         "Switch to automatic light mode",
         path.isLightOn,
-        "isLightOn"
+        "isAutoLight"
       )}
       <Button title="Defaut settings" onPress={defaultSettings} />
     </React.Fragment>

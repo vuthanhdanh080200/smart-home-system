@@ -18,7 +18,7 @@ export default class HomeScreenOn extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLightOn: false,
+      isAutoLight: false,
       isSystemOn: false,
     };
     this._isMounted = false;
@@ -30,7 +30,7 @@ export default class HomeScreenOn extends Component {
       getDataOnChange(path.isSystemOn, (data) => {
         this._isMounted &&
           this.setState({
-            isLightOn: data.isLightOn,
+            isAutoLight: data.isAutoLight,
             isSystemOn: data.isSystemOn,
           });
       });
@@ -81,7 +81,7 @@ export default class HomeScreenOn extends Component {
     );
 
     let modeScreen =
-      this.state.isLightOn === true ? LightScreen() : AntiTheftScreen();
+      this.state.isAutoLight === true ? LightScreen() : AntiTheftScreen();
     return (
       <View
         style={{

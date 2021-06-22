@@ -26,7 +26,7 @@ const screenOptions = ({ route }) => ({
       sourceImg = Images.navBarImg.home;
     } else if (route.name === "Notification") {
       sourceImg = Images.navBarImg.notification;
-    } else if (route.name === "System") {
+    } else if (route.name === "About us") {
       sourceImg = Images.navBarImg.system;
     }
 
@@ -59,7 +59,7 @@ const NavBar = () => {
           component={NotificationStackScreen}
           options={tabBarBadge_option}
         />
-        <Tab.Screen name="System" component={SystemScreen} />
+        <Tab.Screen name="About us" component={SystemScreen} />
       </Tab.Navigator>
       <Image source={Images.logo} style={Styles.logo} />
     </React.Fragment>
