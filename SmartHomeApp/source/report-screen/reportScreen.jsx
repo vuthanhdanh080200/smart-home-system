@@ -45,14 +45,14 @@ function ReportStackScreen(props) {
         options={{ title: "Report Day" }}
         navigation={props}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="reportMonth"
         component={ReportMonthStackScreen}
         options={{
           title: "Report Month",
         }}
         navigation={props}
-      />
+      /> */}
     </Drawer.Navigator>
   );
 }
